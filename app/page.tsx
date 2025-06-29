@@ -1,7 +1,8 @@
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Briefcase, Brain, Mic, Zap } from 'lucide-react';
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Briefcase, Brain, Mic, Zap } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export default function Home() {
   return (
@@ -28,14 +29,25 @@ export default function Home() {
 
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        {/* Built with Bolt.new badge */}
+        <div className="flex justify-center pt-4">
+          <a href="https://bolt.new" target="_blank" rel="noopener noreferrer">
+            <Badge
+              variant="secondary"
+              className="bg-slate-700 text-slate-200 hover:bg-slate-600"
+            >
+              Built with Bolt.new
+            </Badge>
+          </a>
+        </div>
         <div className="text-center">
           <h1 className="text-5xl font-bold text-white mb-6">
             AI-Powered Career
             <span className="text-blue-400 block">Document Generation</span>
           </h1>
           <p className="text-xl text-slate-300 mb-8 max-w-3xl mx-auto">
-            Transform your career with AI. Generate tailored resumes, compelling cover letters, 
-            and practice interviews for any job opportunity.
+            Transform your career with AI. Generate tailored resumes, compelling
+            cover letters, and practice interviews for any job opportunity.
           </p>
           <div className="flex justify-center space-x-4">
             <Button size="lg" asChild>
@@ -52,60 +64,91 @@ export default function Home() {
           <Card className="bg-slate-800/50 border-slate-700 hover:bg-slate-800/70 transition-colors">
             <CardContent className="p-6 text-center">
               <Brain className="h-12 w-12 text-blue-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-white mb-2">AI Resume Builder</h3>
-              <p className="text-slate-400">Generate tailored resumes that match job requirements perfectly</p>
+              <h3 className="text-lg font-semibold text-white mb-2">
+                AI Resume Builder
+              </h3>
+              <p className="text-slate-400">
+                Generate tailored resumes that match job requirements perfectly
+              </p>
             </CardContent>
           </Card>
 
           <Card className="bg-slate-800/50 border-slate-700 hover:bg-slate-800/70 transition-colors">
             <CardContent className="p-6 text-center">
               <Zap className="h-12 w-12 text-green-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-white mb-2">Smart Cover Letters</h3>
-              <p className="text-slate-400">Compelling cover letters that tell your unique story</p>
+              <h3 className="text-lg font-semibold text-white mb-2">
+                Smart Cover Letters
+              </h3>
+              <p className="text-slate-400">
+                Compelling cover letters that tell your unique story
+              </p>
             </CardContent>
           </Card>
 
           <Card className="bg-slate-800/50 border-slate-700 hover:bg-slate-800/70 transition-colors">
             <CardContent className="p-6 text-center">
               <Mic className="h-12 w-12 text-purple-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-white mb-2">Mock Interviews</h3>
-              <p className="text-slate-400">Practice with AI-powered interview simulations</p>
+              <h3 className="text-lg font-semibold text-white mb-2">
+                Mock Interviews
+              </h3>
+              <p className="text-slate-400">
+                Practice with AI-powered interview simulations
+              </p>
             </CardContent>
           </Card>
 
           <Card className="bg-slate-800/50 border-slate-700 hover:bg-slate-800/70 transition-colors">
             <CardContent className="p-6 text-center">
               <Briefcase className="h-12 w-12 text-orange-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-white mb-2">Job Matching</h3>
-              <p className="text-slate-400">Intelligent analysis of job requirements vs your profile</p>
+              <h3 className="text-lg font-semibold text-white mb-2">
+                Job Matching
+              </h3>
+              <p className="text-slate-400">
+                Intelligent analysis of job requirements vs your profile
+              </p>
             </CardContent>
           </Card>
         </div>
 
         {/* How It Works */}
         <div className="mt-20">
-          <h2 className="text-3xl font-bold text-center text-white mb-12">How It Works</h2>
+          <h2 className="text-3xl font-bold text-center text-white mb-12">
+            How It Works
+          </h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="bg-blue-600 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
                 <span className="text-white font-bold">1</span>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Build Your Profile</h3>
-              <p className="text-slate-400">Add your work experience, projects, and skills to create your master profile</p>
+              <h3 className="text-xl font-semibold text-white mb-2">
+                Build Your Profile
+              </h3>
+              <p className="text-slate-400">
+                Add your work experience, projects, and skills to create your
+                master profile
+              </p>
             </div>
             <div className="text-center">
               <div className="bg-blue-600 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
                 <span className="text-white font-bold">2</span>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Add Job URL</h3>
-              <p className="text-slate-400">Paste the URL of any job posting you're interested in</p>
+              <h3 className="text-xl font-semibold text-white mb-2">
+                Add Job URL
+              </h3>
+              <p className="text-slate-400">
+                Paste the URL of any job posting you're interested in
+              </p>
             </div>
             <div className="text-center">
               <div className="bg-blue-600 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
                 <span className="text-white font-bold">3</span>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Get AI Results</h3>
-              <p className="text-slate-400">Receive tailored documents and practice interviews instantly</p>
+              <h3 className="text-xl font-semibold text-white mb-2">
+                Get AI Results
+              </h3>
+              <p className="text-slate-400">
+                Receive tailored documents and practice interviews instantly
+              </p>
             </div>
           </div>
         </div>

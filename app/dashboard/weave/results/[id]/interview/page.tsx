@@ -1,15 +1,30 @@
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { useParams } from 'next/navigation';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
-import { Progress } from '@/components/ui/progress';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ArrowLeft, Mic, Play, Pause, SkipForward, CheckCircle, Loader2, Volume2 } from 'lucide-react';
-import { toast } from 'sonner';
+import { useState, useEffect, useRef } from "react";
+import { useParams } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { Progress } from "@/components/ui/progress";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  ArrowLeft,
+  Mic,
+  Play,
+  Pause,
+  SkipForward,
+  CheckCircle,
+  Loader2,
+  Volume2,
+} from "lucide-react";
+import { toast } from "sonner";
 
 interface InterviewQuestion {
   sessionId: string;
@@ -21,21 +36,23 @@ interface InterviewQuestion {
 interface FeedbackResponse {
   feedback: string;
   nextQuestion: InterviewQuestion | null;
+  error?: string;
 }
 
 export default function InterviewPage() {
   const params = useParams();
   const weaveId = params.id as string;
-  
-  const [currentQuestion, setCurrentQuestion] = useState<InterviewQuestion | null>(null);
-  const [userAnswer, setUserAnswer] = useState('');
-  const [feedback, setFeedback] = useState('');
+
+  const [currentQuestion, setCurrentQuestion] =
+    useState<InterviewQuestion | null>(null);
+  const [userAnswer, setUserAnswer] = useState("");
+  const [feedback, setFeedback] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [audioLoading, setAudioLoading] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
-  
+
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
@@ -44,27 +61,27 @@ export default function InterviewPage() {
 
   const startInterview = async () => {
     try {
-      const response = await fetch('/api/interview/start', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ weaveId })
+      const response = await fetch("/api/interview/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ weaveId }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        if (data.message === 'Interview completed') {
+        if (data.message === "Interview completed") {
           setIsCompleted(true);
         } else {
           setCurrentQuestion(data);
           await playQuestionAudio(data.question);
         }
       } else {
-        toast.error(data.error || 'Failed to start interview');
+        toast.error(data.error || "Failed to start interview");
       }
     } catch (error) {
-      console.error('Error starting interview:', error);
-      toast.error('Failed to start interview');
+      console.error("Error starting interview:", error);
+      toast.error("Failed to start interview");
     } finally {
       setLoading(false);
     }
@@ -73,26 +90,26 @@ export default function InterviewPage() {
   const playQuestionAudio = async (question: string) => {
     try {
       setAudioLoading(true);
-      const response = await fetch('/api/elevenlabs-audio', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question })
+      const response = await fetch("/api/elevenlabs-audio", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question }),
       });
 
       if (response.ok) {
         const audioBlob = await response.blob();
         const audioUrl = URL.createObjectURL(audioBlob);
-        
+
         if (audioRef.current) {
           audioRef.current.src = audioUrl;
           audioRef.current.play();
         }
       } else {
-        console.error('Failed to generate audio');
+        console.error("Failed to generate audio");
         // Continue without audio
       }
     } catch (error) {
-      console.error('Audio generation error:', error);
+      console.error("Audio generation error:", error);
       // Continue without audio
     } finally {
       setAudioLoading(false);
@@ -101,20 +118,20 @@ export default function InterviewPage() {
 
   const submitAnswer = async () => {
     if (!currentQuestion || !userAnswer.trim()) {
-      toast.error('Please provide an answer');
+      toast.error("Please provide an answer");
       return;
     }
 
     setSubmitting(true);
 
     try {
-      const response = await fetch('/api/interview/feedback', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/interview/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           sessionId: currentQuestion.sessionId,
-          answer: userAnswer
-        })
+          answer: userAnswer,
+        }),
       });
 
       const data: FeedbackResponse = await response.json();
@@ -122,13 +139,13 @@ export default function InterviewPage() {
       if (response.ok) {
         setFeedback(data.feedback);
         setShowFeedback(true);
-        
+
         if (data.nextQuestion) {
           // Prepare next question
           setTimeout(() => {
             setCurrentQuestion(data.nextQuestion);
-            setUserAnswer('');
-            setFeedback('');
+            setUserAnswer("");
+            setFeedback("");
             setShowFeedback(false);
             playQuestionAudio(data.nextQuestion!.question);
           }, 5000); // Show feedback for 5 seconds
@@ -139,18 +156,20 @@ export default function InterviewPage() {
           }, 3000);
         }
       } else {
-        toast.error(data.error || 'Failed to get feedback');
+        toast.error(data.error || "Failed to get feedback");
       }
     } catch (error) {
-      console.error('Error submitting answer:', error);
-      toast.error('Failed to submit answer');
+      console.error("Error submitting answer:", error);
+      toast.error("Failed to submit answer");
     } finally {
       setSubmitting(false);
     }
   };
 
-  const progress = currentQuestion ? 
-    ((currentQuestion.questionNumber) / (currentQuestion.totalQuestions || 5)) * 100 : 0;
+  const progress = currentQuestion
+    ? (currentQuestion.questionNumber / (currentQuestion.totalQuestions || 5)) *
+      100
+    : 0;
 
   if (loading) {
     return (
@@ -166,11 +185,14 @@ export default function InterviewPage() {
         <div className="bg-green-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto">
           <CheckCircle className="h-8 w-8 text-white" />
         </div>
-        
+
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Interview Completed!</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">
+            Interview Completed!
+          </h1>
           <p className="text-slate-400">
-            Great job! You&apos;ve completed the mock interview. Review your performance and keep practicing.
+            Great job! You&apos;ve completed the mock interview. Review your
+            performance and keep practicing.
           </p>
         </div>
 
@@ -199,23 +221,21 @@ export default function InterviewPage() {
             Back to Results
           </Link>
         </Button>
-        
         <div className="text-center">
           <h1 className="text-2xl font-bold text-white">Mock Interview</h1>
           {currentQuestion && (
             <p className="text-slate-400">
-              Question {currentQuestion.questionNumber} of {currentQuestion.totalQuestions || 5}
+              Question {currentQuestion.questionNumber} of{" "}
+              {currentQuestion.totalQuestions || 5}
             </p>
           )}
         </div>
-        
         <div className="w-20" /> {/* Spacer for centering */}
       </div>
 
       {/* Progress */}
       {currentQuestion && (
         <div className="space-y-2">
-          
           <div className="flex justify-between text-sm text-slate-400">
             <span>Progress</span>
             <span>{Math.round(progress)}%</span>
@@ -236,7 +256,7 @@ export default function InterviewPage() {
                 <Mic className="h-5 w-5 text-purple-400" />
                 <span>Interview Question</span>
               </CardTitle>
-              
+
               {audioLoading ? (
                 <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
               ) : (
@@ -272,7 +292,7 @@ export default function InterviewPage() {
                 />
               </div>
 
-              <Button 
+              <Button
                 onClick={submitAnswer}
                 disabled={submitting || !userAnswer.trim()}
                 className="w-full bg-purple-600 hover:bg-purple-700"
@@ -284,7 +304,7 @@ export default function InterviewPage() {
                     Getting Feedback...
                   </>
                 ) : (
-                  'Submit Answer & Get Feedback'
+                  "Submit Answer & Get Feedback"
                 )}
               </Button>
             </div>
@@ -307,13 +327,14 @@ export default function InterviewPage() {
                 {feedback}
               </AlertDescription>
             </Alert>
-            
+
             <div className="mt-4 text-center">
               <p className="text-slate-400 text-sm">
-                {currentQuestion && currentQuestion.questionNumber < (currentQuestion.totalQuestions || 5) 
-                  ? 'Preparing next question...' 
-                  : 'Completing interview...'
-                }
+                {currentQuestion &&
+                currentQuestion.questionNumber <
+                  (currentQuestion.totalQuestions || 5)
+                  ? "Preparing next question..."
+                  : "Completing interview..."}
               </p>
             </div>
           </CardContent>
@@ -325,7 +346,10 @@ export default function InterviewPage() {
         <CardContent className="p-4">
           <h3 className="text-white font-medium mb-2">💡 Interview Tips</h3>
           <ul className="text-slate-300 text-sm space-y-1">
-            <li>• Use the STAR method (Situation, Task, Action, Result) for behavioral questions</li>
+            <li>
+              • Use the STAR method (Situation, Task, Action, Result) for
+              behavioral questions
+            </li>
             <li>• Be specific with examples from your experience</li>
             <li>• Take your time to think before answering</li>
             <li>• Ask clarifying questions if needed</li>
