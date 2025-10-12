@@ -10,8 +10,6 @@ Career Weave is a comprehensive, full-stack web application that leverages artif
 
 ## 📋 Project Overview
 
-Link Bolt.new: https://bolt.new/~/sb1-xoyb4e6b
-
 ### Elevator Pitch
 
 Career Weave transforms the job application process by using AI to analyze job postings and generate perfectly tailored resumes, compelling cover letters, and comprehensive interview strategies. Users can then practice with AI-powered mock interviews featuring realistic voice synthesis, making job preparation more effective and accessible than ever before.
